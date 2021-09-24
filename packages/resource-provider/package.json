@@ -22,5 +22,6 @@
   "homepage": "https://github.com/hari-narasimhan/super-aurora#readme",
   "dependencies": {
     "lodash": "^4.17.21"
-  }
+  },
+  "gitHead": "b88776dd5151762bc2345509f466781d79c134cd"
 }

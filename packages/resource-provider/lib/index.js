@@ -2,7 +2,7 @@ class ResourceProvider {
   constructor () {
     this._providers = {}
   }
-
+  // Add a new provider
   add(params) {
     try {
       const _provider = require('./providers/' + params.type)
@@ -16,7 +16,7 @@ class ResourceProvider {
       throw new Error('Module not available!')
     }
   }
-
+  // Get resource provider
   get(name) {
     return this._providers[name]
   }
