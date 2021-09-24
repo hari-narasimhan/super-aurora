@@ -1,0 +1,26 @@
+{
+  "name": "@super-aurora/resource-provider",
+  "version": "0.0.1",
+  "description": "A common resource provider for nodejs backend projects",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hari-narasimhan/super-aurora.git"
+  },
+  "keywords": [
+    "nodejs",
+    "resource-factory"
+  ],
+  "author": "Hari Narasimhan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hari-narasimhan/super-aurora/issues"
+  },
+  "homepage": "https://github.com/hari-narasimhan/super-aurora#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
