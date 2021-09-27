@@ -1,0 +1,30 @@
+{
+  "name": "@super-aurora/application-error",
+  "version": "0.1.0",
+  "description": "A common application error class",
+  "keywords": [
+    "Application",
+    "Error"
+  ],
+  "author": "Hari Narasimhan <harin76@gmail.com>",
+  "homepage": "https://github.com/hari-narasimhan/super-aurora#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hari-narasimhan/super-aurora.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/hari-narasimhan/super-aurora/issues"
+  }
+}
