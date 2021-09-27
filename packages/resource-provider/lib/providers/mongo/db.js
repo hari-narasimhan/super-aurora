@@ -369,8 +369,8 @@ class Database {
     } = {
       ...options
     }
-    const collection = this.connectionManager.getCollection(convertObjectId(context)) // mongo.db(context.tenant).collection(context.coll)
-    const [error, result] = await to(collection.findOneAndDelete(criteria))
+    const collection = this.connectionManager.getCollection(context) // mongo.db(context.tenant).collection(context.coll)
+    const [error, result] = await to(collection.findOneAndDelete(convertObjectId(criteria)))
     if (error) {
       throw error
     } else {
