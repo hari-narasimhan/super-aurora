@@ -16,7 +16,7 @@ const addIdToProjection = (projection = {}) => {
   return projection
 }
 
-const convertObjectIdForQuery = (query) => {
+const convertObjectId = (query) => {
   // converting object id
   let q = {}
   if (query._id) {
@@ -81,7 +81,7 @@ class Database {
 
     const _limit = limit || 10
     const _page = page || 1
-    const _query = convertObjectIdForQuery(query || {})
+    const _query = convertObjectId(query || {})
     const _projection = addIdToProjection(projection)
     const _sort = sort || {
       _id: -1
@@ -139,7 +139,7 @@ class Database {
   //     ...options
   //   }
   //   const _limit = limit || 10
-  //   const _query = convertObjectIdForQuery(query || {})
+  //   const _query = convertObjectId(query || {})
   //   const _projection = addIdToProjection(projection)
   //   const _sort = sort || {
   //     _id: -1
@@ -318,7 +318,7 @@ class Database {
     }
     const [error, result] = await to(collection
       .findOneAndUpdate(
-        criteria,
+        convertObjectId(criteria),
         isSetUpdate ? updatePayload : _payload, {
           returnDocument,
           upsert,
@@ -369,7 +369,7 @@ class Database {
     } = {
       ...options
     }
-    const collection = this.connectionManager.getCollection(context) // mongo.db(context.tenant).collection(context.coll)
+    const collection = this.connectionManager.getCollection(convertObjectId(context)) // mongo.db(context.tenant).collection(context.coll)
     const [error, result] = await to(collection.findOneAndDelete(criteria))
     if (error) {
       throw error
@@ -386,7 +386,7 @@ class Database {
     }
     try {
       const collection = this.connectionManager.getCollection(context) // mongo.db(context.tenant).collection(context.coll)
-      const [error, result] = await to(collection.deleteMany(criteria))
+      const [error, result] = await to(collection.deleteMany(convertObjectId(criteria)))
       if (error) {
         throw error
       } else {
@@ -440,7 +440,7 @@ class Database {
 
     const [error, result] = await to(collection
       .update(
-        criteria,
+        convertObjectId(criteria),
         updatePayload, {
           multi,
           upsert
@@ -481,7 +481,6 @@ class Database {
     const collection = this.connectionManager.getCollection(context) // mongo.db(context.tenant).collection(context.coll)
     const [error, result] = await to(collection.aggregate(pipeline).toArray())
     if (error) {
-      console.log(error)
       throw error
     } else {
       return result
