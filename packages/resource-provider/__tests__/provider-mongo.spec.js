@@ -161,8 +161,9 @@ test('@super-phoenix/provider-mongo::Should insert multiple records', async () =
       { name: 'Astro-physics', category: 'students', count: 10 }
     ]
   })
-  const find1 = await db.find(ctxDepartments, { query: { _id: { $in: _.values(result.insertedIds) } }, includeCursor: true })
+  const find1 = await db.find(ctxDepartments, { sort: { 'name': -1 }, query: { _id: { $in: _.values(result.insertedIds) } }, includeCursor: true })
   expect(find1.cursor.totalRecords).toEqual(2)
+  expect(find1.records[0].name).toBe('Astro-physics')
   const find2 = await db.find(ctxDepartments, { query: { _id: result.insertedIds[0].toString() }, includeCursor: true })
   expect(find2.cursor.totalRecords).toEqual(1)
   expect(find2.records[0]._id.toString()).toEqual(result.insertedIds[0].toString())
