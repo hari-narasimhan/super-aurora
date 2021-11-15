@@ -213,4 +213,15 @@ test('@super-phoenix/provider-mongo::Should find one with projections', async ()
   expect(department.category).toBeFalsy()
 })
 
+test('@super-phoenix/provider-mongo::Should delete using _id', async () => {
+  const db = rp.get('db')
+  let department = await db.findOne(ctxDepartments, { query: { name: 'Astro-physics' }})
+  expect(department._id).toBeTruthy()
+  const result = await db.remove(ctxDepartments, { criteria: { _id: department._id.toString() }})
+  expect(result).toBeTruthy()
+  department = await db.findOne(ctxDepartments, { query: { name: 'Astro-physics' }})
+  expect(department).toBeFalsy()
+
+})
+
 jest.setTimeout(100000)
