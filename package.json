@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "eslint": "^7.32.0",
-    "lerna": "^4.0.0"
+    "lerna": "^6.6.2"
   },
   "scripts": {
     "test": "node scripts/test.js --forceExit --detectOpenHandles --coverage",
