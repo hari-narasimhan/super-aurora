@@ -29,7 +29,7 @@
     "mongodb": "^4.1.2",
     "uuid": "^8.3.2"
   },
-  "gitHead": "24b4d9311779197e5fd17de582e220e3b7d35466",
+  "gitHead": "5370fbb50c2ff09e1574d1f1980df2412320f30e",
   "devDependencies": {
     "eslint": "^7.32.0",
     "minimist": "^1.2.5"
