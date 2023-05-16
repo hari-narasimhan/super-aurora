@@ -1,6 +1,6 @@
 {
   "name": "@super-aurora/resource-provider",
-  "version": "0.3.1",
+  "version": "0.3.0",
   "description": "A common resource provider for nodejs backend projects",
   "main": "lib/index.js",
   "scripts": {
