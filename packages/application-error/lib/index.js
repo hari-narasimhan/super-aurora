@@ -10,4 +10,9 @@ class ApplicationError extends Error {
   }
 }
 
+const createAppError = ({ code, message, statusCode }) => {
+  return new ApplicationError(code, message, statusCode)
+}
+
 module.exports = ApplicationError
+module.exports.createAppError = createAppError
