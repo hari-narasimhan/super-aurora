@@ -1,6 +1,6 @@
 {
   "name": "@super-aurora/schema-to-sql",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Generates SQL statements from JSON Schema. If previous version is available compares with the previous version and generates the DDL statements.",
   "keywords": [
     "SQL",
@@ -30,7 +30,5 @@
   },
   "bugs": {
     "url": "https://github.com/hari-narasimhan/super-aurora/issues"
-  },
-  "dependencies": {
   }
 }
