@@ -51,7 +51,7 @@ class Repository {
   }
 
   async update({ db, params, payload }) {
-    // Set the updated_at attribute
+    // Set the updatedAt attribute
     payload.updatedAt = new Date()
     await db(this.table).where({ id: params.id }).update(payload)
     return this.findById({ db, params })
