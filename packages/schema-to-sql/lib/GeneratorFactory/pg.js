@@ -1,9 +1,10 @@
 const { SCHEMA_OPERATIONS } = require('./constants')
+const { getUniqueAttributes } = require('./util')
 
-function generateUniqueConstraints(attributes) {
-  const uniqueCols = attributes.filter((attribute) => attribute.name !== 'id' && attribute.isUnique).map((a) => a.name)
-  if (uniqueCols.length > 0) {
-    return `  UNIQUE(${uniqueCols.join(',')})`
+function generateUniqueConstraints(model) {
+  const uniqueAttrs = getUniqueAttributes(model)
+  if (uniqueAttrs.length > 0) {
+    return `  CONSTRAINT  uc_${model.name} UNIQUE(${uniqueAttrs.join(',')})`
   }
   return null
 }
@@ -111,12 +112,12 @@ function generateColumn(attribute, addComma) {
   if (defaultValue) {
     defaultValue = `DEFAULT ${defaultValue} `
   }
-  return `  ${attribute.name} ${type} ${attribute.name === 'id' ? 'PRIMARY KEY' : ''} ${attribute.isRequired ? 'NOT NULL' : ''}${addComma ? ',' : ''} `
+  return `  ${attribute.name} ${type} ${attribute.name === 'id' ? 'PRIMARY KEY ' : ''}${attribute.isRequired ? 'NOT NULL ' : ''}${addComma ? ',' : ''} `
 }
 
 function generateModel(model) {
   const generated = []
-  const unique = generateUniqueConstraints(model.attributes)
+  const unique = generateUniqueConstraints(model)
   generated.push(`CREATE TABLE IF NOT EXISTS ${model.name} (`)
   model.attributes.forEach((attribute, index) => {
     let addComma = true
@@ -126,7 +127,7 @@ function generateModel(model) {
     generated.push(generateColumn(attribute, addComma))
   })
   if (unique) {
-    generated.push(generateUniqueConstraints(model.attributes))
+    generated.push(unique)
   }
   generated.push(');\n')
   return generated.join('\n')
@@ -170,33 +171,43 @@ function generateAddAttribute(op) {
 function generateAttributeNullConstraint(op) {
   return `ALTER TABLE ${op.params.model.name}\nALTER COLUMN ${op.params.attribute.name} ${op.params.attribute.isRequired ? 'SET NOT NULL' : 'DROP NOT NULL'};`
 }
+
+function generateChangedUniqueConstraints(op) {
+  return `ALTER TABLE ${op.params.model.name}\nDROP CONSTRAINT uc_${op.params.model.name};
+ALTER TABLE ${op.params.model.name}\nADD ${generateUniqueConstraints(op.params.model)};
+`
+}
+
 function generateSchemaFromDiffOps(ops) {
   const generated = []
   for (const op of ops) {
     switch (op.type) {
-      case SCHEMA_OPERATIONS.DROP_MODEL:
+      case SCHEMA_OPERATIONS.MODEL_DROPPED:
         generated.push(generateDropModel(op.params.name))
         break;
-      case SCHEMA_OPERATIONS.ADD_MODEL:
+      case SCHEMA_OPERATIONS.MODEL_ADDED:
         generated.push(generateModel(op.params.model))
         break;
-      case SCHEMA_OPERATIONS.CHANGE_MODEL_NAME:
+      case SCHEMA_OPERATIONS.MODEL_NAME_CHANGED:
         generated.push(generateAlterTable(op))
         break;
-      case SCHEMA_OPERATIONS.CHANGE_ATTRIBUTE_NAME:
+      case SCHEMA_OPERATIONS.ATTRIBUTE_NAME_CHANGED:
         generated.push(generateChangeAttributeName(op));
         break;
-      case SCHEMA_OPERATIONS.CHANGE_ATTRIBUTE_IS_NULL:
+      case SCHEMA_OPERATIONS.ATTRIBUTE_IS_NULL_CHANGED:
         generated.push(generateAttributeNullConstraint(op))
         break;
-      case SCHEMA_OPERATIONS.ADD_ATTRIBUTE:
+      case SCHEMA_OPERATIONS.ATTRIBUTE_ADDED:
         generated.push(generateAddAttribute(op))
         break;
-      case SCHEMA_OPERATIONS.DROP_ATTRIBUTE:
+      case SCHEMA_OPERATIONS.ATTRIBUTE_DROPPED:
         generated.push(generateDropAttribute(op))
         break;
-      case SCHEMA_OPERATIONS.MODIFY_ATTRIBUTE:
+      case SCHEMA_OPERATIONS.ATTRIBUTE_MODIFIED:
         generated.push(generateModifyAttribute(op))
+        break;
+      case SCHEMA_OPERATIONS.UNIQUE_CONSTRAINTS_CHANGED:
+        generated.push(generateChangedUniqueConstraints(op))
         break;
     }
   }

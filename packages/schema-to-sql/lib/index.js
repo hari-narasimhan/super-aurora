@@ -1,6 +1,7 @@
 'use strict';
 
-const { generateSchema, generateSchemaFromDiffOps, SCHEMA_OPERATIONS } = require('../lib/GeneratorFactory.js')
+const { generateSchema, generateSchemaFromDiffOps, SCHEMA_OPERATIONS } = require('./GeneratorFactory')
+const { hasUniqueColumnsChanged } = require('./GeneratorFactory/util')
 
 function generateDiffOperations(current, previous) {
   // Check for dropped models
@@ -9,17 +10,17 @@ function generateDiffOperations(current, previous) {
 
   if (droppedModels.length > 0) {
     droppedModels.forEach(dm => {
-      ops.push({ type: SCHEMA_OPERATIONS.DROP_MODEL, params: { name: dm.name } })
+      ops.push({ type: SCHEMA_OPERATIONS.MODEL_DROPPED, params: { name: dm.name } })
     })
   }
 
   for (const model of current.models) {
     const prevModel = previous.models.find(p => p.id === model.id)
     if (!prevModel) {
-      ops.push({ type: SCHEMA_OPERATIONS.ADD_MODEL, params: { model } })
+      ops.push({ type: SCHEMA_OPERATIONS.MODEL_ADDED, params: { model } })
     } else {
       if (model.name !== prevModel.name) {
-        ops.push({ type: SCHEMA_OPERATIONS.CHANGE_MODEL_NAME, params: { current: model, previous: prevModel } })
+        ops.push({ type: SCHEMA_OPERATIONS.MODEL_NAME_CHANGED, params: { current: model, previous: prevModel } })
       }
 
       // Check for changed attributes
@@ -27,7 +28,7 @@ function generateDiffOperations(current, previous) {
       if (droppedAttributes.length > 0) {
         droppedAttributes.forEach(da => {
           ops.push({
-            type: SCHEMA_OPERATIONS.DROP_ATTRIBUTE, params: { model: { id: model.id, name: model.name }, attribute: { id: da.id, name: da.name } }
+            type: SCHEMA_OPERATIONS.ATTRIBUTE_DROPPED, params: { model: { id: model.id, name: model.name }, attribute: { id: da.id, name: da.name } }
           })
         })
       }
@@ -35,21 +36,21 @@ function generateDiffOperations(current, previous) {
         const attr = prevModel.attributes.find(a => a.id === attribute.id)
         if (!attr) {
           ops.push({
-            type: SCHEMA_OPERATIONS.ADD_ATTRIBUTE,
+            type: SCHEMA_OPERATIONS.ATTRIBUTE_ADDED,
             params: { model: { id: model.id, name: model.name }, attribute }
           })
         } else {
           // Check for name change
           if (attr.name !== attribute.name) {
             ops.push({
-              type: SCHEMA_OPERATIONS.CHANGE_ATTRIBUTE_NAME,
+              type: SCHEMA_OPERATIONS.ATTRIBUTE_NAME_CHANGED,
               params: { model: { id: model.id, name: model.name }, current: attribute, previous: attr }
             })
           }
           // Check if null constraint is changed
           if (attr.isRequired !== attribute.isRequired) {
             ops.push({
-              type: SCHEMA_OPERATIONS.CHANGE_ATTRIBUTE_IS_NULL,
+              type: SCHEMA_OPERATIONS.ATTRIBUTE_IS_NULL_CHANGED,
               params: { model: { id: model.id, name: model.name }, attribute }
             })
           }
@@ -59,11 +60,18 @@ function generateDiffOperations(current, previous) {
             || attr.min !== attribute.min
             || attr.max !== attribute.max) {
             ops.push({
-              type: SCHEMA_OPERATIONS.MODIFY_ATTRIBUTE,
+              type: SCHEMA_OPERATIONS.ATTRIBUTE_MODIFIED,
               params: { model: { id: model.id, name: model.name }, attribute }
             })
           }
         }
+      }
+      // Check if unique constraints have changed
+      if (hasUniqueColumnsChanged(prevModel, model)) {
+        ops.push({
+          type: SCHEMA_OPERATIONS.UNIQUE_CONSTRAINTS_CHANGED,
+          params: { model }
+        })
       }
     }
   }

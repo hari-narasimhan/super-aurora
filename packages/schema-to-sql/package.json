@@ -26,9 +26,10 @@
     "url": "git+https://github.com/hari-narasimhan/super-aurora.git"
   },
   "scripts": {
-    "test": "jest ./__tests__/schema-to-sql.spec.js"
+    "test": "jest ./__tests__/"
   },
   "bugs": {
     "url": "https://github.com/hari-narasimhan/super-aurora/issues"
-  }
+  },
+  "gitHead": "eaf27a170c3d65e7c45cf026b75845a483f4e3e3"
 }
