@@ -147,7 +147,7 @@ function generateAlterTable(op) {
 }
 
 function generateDropModel(name) {
-  return `DROP TABLE ${name} IF EXISTS;`
+  return `DROP TABLE IF EXISTS ${name};`
 }
 
 function generateDropAttribute(op) {
@@ -156,8 +156,7 @@ function generateDropAttribute(op) {
 
 function generateModifyAttribute(op) {
   const attribute = op.params.attribute
-  return `ALTER TABLE ${op.params.model.name}
-      ALTER COLUMN ${attribute.name} TYPE ${getColumnType(attribute)};\n`
+  return `ALTER TABLE ${op.params.model.name}\nALTER COLUMN ${attribute.name} TYPE ${getColumnType(attribute)};\n`
 }
 
 function generateChangeAttributeName(op) {

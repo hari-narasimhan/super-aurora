@@ -1,0 +1,4 @@
+{
+  "pg":"CREATE TABLE IF NOT EXISTS invoices (\n  id VARCHAR(50) PRIMARY KEY NOT NULL , \n  name VARCHAR(50) NOT NULL , \n  CONSTRAINT  uc_invoices UNIQUE(name)\n);\n",
+  "redshift":"CREATE TABLE IF NOT EXISTS invoices (\n  id VARCHAR(50) PRIMARY KEY NOT NULL , \n  name VARCHAR(50) NOT NULL , \n  CONSTRAINT  uc_invoices UNIQUE(name)\n);\n"
+}
