@@ -4,7 +4,7 @@ const { getUniqueAttributes } = require('./util')
 function generateUniqueConstraints(model) {
   const uniqueAttrs = getUniqueAttributes(model)
   if (uniqueAttrs.length > 0) {
-    return `  CONSTRAINT  uc_${model.name} UNIQUE(${uniqueAttrs.join(',')})`
+    return `  CONSTRAINT  "uc_${model.name}" UNIQUE(${uniqueAttrs.join(',')})`
   }
   return null
 }
@@ -110,15 +110,15 @@ function generateColumn(attribute, addComma) {
   let defaultValue = getDefaultValue(attribute)
 
   if (defaultValue) {
-    defaultValue = `DEFAULT ${defaultValue} `
+    defaultValue = `DEFAULT "${defaultValue}" `
   }
-  return `  ${attribute.name} ${type} ${attribute.name === 'id' ? 'PRIMARY KEY ' : ''}${attribute.isRequired ? 'NOT NULL ' : ''}${addComma ? ',' : ''} `
+  return `  "${attribute.name}" ${type} ${attribute.name === 'id' ? 'PRIMARY KEY ' : ''}${attribute.isRequired ? 'NOT NULL ' : ''}${addComma ? ',' : ''} `
 }
 
 function generateModel(model) {
   const generated = []
   const unique = generateUniqueConstraints(model)
-  generated.push(`CREATE TABLE IF NOT EXISTS ${model.name} (`)
+  generated.push(`CREATE TABLE IF NOT EXISTS "${model.name}" (`)
   model.attributes.forEach((attribute, index) => {
     let addComma = true
     if (unique === null && index === model.attribute.length - 1) {
@@ -143,37 +143,37 @@ function generateSchema(schema) {
 }
 
 function generateAlterTable(op) {
-  return `ALTER TABLE ${op.params.previous.name} RENAME TO ${op.params.current.name};`
+  return `ALTER TABLE "${op.params.previous.name}" RENAME TO "${op.params.current.name}";`
 }
 
 function generateDropModel(name) {
-  return `DROP TABLE IF EXISTS ${name};`
+  return `DROP TABLE IF EXISTS "${name}";`
 }
 
 function generateDropAttribute(op) {
-  return `ALTER TABLE ${op.params.model.name} DROP COLUMN ${op.params.attribute.name};`;
+  return `ALTER TABLE "${op.params.model.name}" DROP COLUMN "${op.params.attribute.name}";`;
 }
 
 function generateModifyAttribute(op) {
   const attribute = op.params.attribute
-  return `ALTER TABLE ${op.params.model.name}\nALTER COLUMN ${attribute.name} TYPE ${getColumnType(attribute)};\n`
+  return `ALTER TABLE "${op.params.model.name}"\nALTER COLUMN "${attribute.name}" TYPE ${getColumnType(attribute)};\n`
 }
 
 function generateChangeAttributeName(op) {
-  return `ALTER TABLE ${op.params.model.name}\nRENAME COLUMN ${op.params.previous.name} TO ${op.params.current.name};\n`
+  return `ALTER TABLE "${op.params.model.name}"\nRENAME COLUMN "${op.params.previous.name}" TO "${op.params.current.name}";\n`
 }
 
 function generateAddAttribute(op) {
-  return `ALTER TABLE ${op.params.model.name}\nADD COLUMN ${generateColumn(op.params.attribute, false)};\n`
+  return `ALTER TABLE "${op.params.model.name}"\nADD COLUMN ${generateColumn(op.params.attribute, false)};\n`
 }
 
 function generateAttributeNullConstraint(op) {
-  return `ALTER TABLE ${op.params.model.name}\nALTER COLUMN ${op.params.attribute.name} ${op.params.attribute.isRequired ? 'SET NOT NULL' : 'DROP NOT NULL'};`
+  return `ALTER TABLE "${op.params.model.name}"\nALTER COLUMN "${op.params.attribute.name}" ${op.params.attribute.isRequired ? 'SET NOT NULL' : 'DROP NOT NULL'};`
 }
 
 function generateChangedUniqueConstraints(op) {
-  return `ALTER TABLE ${op.params.model.name}\nDROP CONSTRAINT uc_${op.params.model.name};
-ALTER TABLE ${op.params.model.name}\nADD ${generateUniqueConstraints(op.params.model)};
+  return `ALTER TABLE "${op.params.model.name}"\nDROP CONSTRAINT "uc_${op.params.model.name}";
+ALTER TABLE "${op.params.model.name}"\nADD ${generateUniqueConstraints(op.params.model)};
 `
 }
 

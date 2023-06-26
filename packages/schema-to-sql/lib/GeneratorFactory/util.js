@@ -1,7 +1,7 @@
 
 function getUniqueAttributes(model) {
   const attributes = model.attributes
-  const uniqueAttrs = attributes.filter((attribute) => attribute.name !== 'id' && attribute.isUnique).map((a) => a.name)
+  const uniqueAttrs = attributes.filter((attribute) => attribute.name !== 'id' && attribute.isUnique).map((a) => `"${a.name}"`)
   return uniqueAttrs
 }
 

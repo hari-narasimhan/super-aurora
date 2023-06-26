@@ -40,13 +40,13 @@ describe('generate schema from diff', () => {
     const changeset = require('./inputs/add-column-after.json')
     const current = require('./inputs/add-column-before.json')
     const result = schemaToSql.generateDDL(targets, changeset, current)
-    // console.log(result)
+    console.log(result)
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE users\nADD COLUMN   address TEXT  ;\n')
-    expect(result.redshift).toEqual('ALTER TABLE users\nADD COLUMN   address TEXT  ;\n')
+    expect(result.pg).toEqual('ALTER TABLE "users"\nADD COLUMN   "address" TEXT  ;\n')
+    expect(result.redshift).toEqual('ALTER TABLE "users"\nADD COLUMN   "address" TEXT  ;\n')
 
-    // targets.forEach(t => console.log(result[t]))
+    targets.forEach(t => console.log(result[t]))
   })
 
   // Columns removed
@@ -58,8 +58,8 @@ describe('generate schema from diff', () => {
     // console.log(result)
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE users DROP COLUMN weddingDate;')
-    expect(result.redshift).toEqual('ALTER TABLE users DROP COLUMN weddingDate;')
+    expect(result.pg).toEqual('ALTER TABLE "users" DROP COLUMN "weddingDate";')
+    expect(result.redshift).toEqual('ALTER TABLE "users" DROP COLUMN "weddingDate";')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -72,8 +72,8 @@ describe('generate schema from diff', () => {
     // console.log(result)
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE users\nRENAME COLUMN weddingDate TO marriageDate;\n')
-    expect(result.redshift).toEqual('ALTER TABLE users\nRENAME COLUMN weddingDate TO marriageDate;\n')
+    expect(result.pg).toEqual('ALTER TABLE "users"\nRENAME COLUMN "weddingDate" TO "marriageDate";\n')
+    expect(result.redshift).toEqual('ALTER TABLE "users"\nRENAME COLUMN "weddingDate" TO "marriageDate";\n')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -87,8 +87,8 @@ describe('generate schema from diff', () => {
     // console.log(result)
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE users\nALTER COLUMN dateOfBirth TYPE TIMESTAMP;\n')
-    expect(result.redshift).toEqual('ALTER TABLE users\nALTER COLUMN dateOfBirth TYPE TIMESTAMPTZ;\n')
+    expect(result.pg).toEqual('ALTER TABLE "users"\nALTER COLUMN "dateOfBirth" TYPE TIMESTAMP;\n')
+    expect(result.redshift).toEqual('ALTER TABLE "users"\nALTER COLUMN "dateOfBirth" TYPE TIMESTAMPTZ;\n')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -118,8 +118,8 @@ describe('generate schema from diff', () => {
     // console.log(JSON.stringify(result))
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('DROP TABLE IF EXISTS projects;')
-    expect(result.redshift).toEqual('DROP TABLE IF EXISTS projects;')
+    expect(result.pg).toEqual('DROP TABLE IF EXISTS "projects";')
+    expect(result.redshift).toEqual('DROP TABLE IF EXISTS "projects";')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -133,8 +133,8 @@ describe('generate schema from diff', () => {
     // console.log(JSON.stringify(result))
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE projects RENAME TO projectsDetails;')
-    expect(result.redshift).toEqual('ALTER TABLE projects RENAME TO projectsDetails;')
+    expect(result.pg).toEqual('ALTER TABLE "projects" RENAME TO "projectsDetails";')
+    expect(result.redshift).toEqual('ALTER TABLE "projects" RENAME TO "projectsDetails";')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -148,8 +148,8 @@ describe('generate schema from diff', () => {
     // console.log(JSON.stringify(result))
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)
-    expect(result.pg).toEqual('ALTER TABLE users\nALTER COLUMN email SET NOT NULL;')
-    expect(result.redshift).toEqual('ALTER TABLE users\nALTER COLUMN email SET NOT NULL;')
+    expect(result.pg).toEqual('ALTER TABLE "users"\nALTER COLUMN "email" SET NOT NULL;')
+    expect(result.redshift).toEqual('ALTER TABLE "users"\nALTER COLUMN "email" SET NOT NULL;')
 
     // targets.forEach(t => console.log(result[t]))
   })
@@ -193,6 +193,7 @@ describe('generate schema from diff', () => {
   it('Should generate schema when a schema is modified', () => {
     const targets = ['pg', 'redshift']
     const result = schemaToSql.generateDDL(targets, changeSet1, current)
+    targets.forEach(t => console.log(result[t]))
     expect(result).toBeTruthy()
     expect(typeof result).toEqual('object')
     expect(Object.keys(result)).toEqual(targets)

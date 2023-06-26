@@ -1,1 +1,4 @@
-{"pg":"ALTER TABLE users\nDROP CONSTRAINT uc_users;\nALTER TABLE users\nADD   CONSTRAINT  uc_users UNIQUE(firstName,lastName);\n","redshift":"ALTER TABLE users\nDROP CONSTRAINT uc_users;\nALTER TABLE users\nADD   CONSTRAINT  uc_users UNIQUE(firstName,lastName);\n"}
+{
+  "pg":"ALTER TABLE \"users\"\nDROP CONSTRAINT \"uc_users\";\nALTER TABLE \"users\"\nADD   CONSTRAINT  \"uc_users\" UNIQUE(\"firstName\",\"lastName\");\n",
+  "redshift":"ALTER TABLE \"users\"\nDROP CONSTRAINT \"uc_users\";\nALTER TABLE \"users\"\nADD   CONSTRAINT  \"uc_users\" UNIQUE(\"firstName\",\"lastName\");\n"
+}
