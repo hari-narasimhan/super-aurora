@@ -1,6 +1,6 @@
 {
   "name": "@super-aurora/knex-repository",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "Repository pattern for knex and nodejs",
   "keywords": [
     "knex",

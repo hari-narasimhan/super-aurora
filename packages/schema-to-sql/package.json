@@ -1,6 +1,6 @@
 {
   "name": "@super-aurora/schema-to-sql",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "Generates SQL statements from JSON Schema. If previous version is available compares with the previous version and generates the DDL statements.",
   "keywords": [
     "SQL",
